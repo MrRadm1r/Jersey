@@ -1,31 +1,48 @@
 import pygame as pg
-class Jersey:
-    def init(self):
-        pg.init()
-        self.x = 500
-        self.y = 500
-        self.win = pg.display.set_mode((self.x, self.y))
-        #pg.display.set_caption('Green Paws alpha:1.3')
-        #pg.display.set_icon(pg.image.load('images/ghost.png'))
-        self.run = True
-        self.width = 32
-        self.height = 32
+import ctypes
+import pygame
 
-        # ПИСАТЬ ДО
+window = ctypes.windll.user32
+x = window.GetSystemMetrics(0) * 0.55
+y = window.GetSystemMetrics(1) * 0.55
+
+
+class Green_Paws:
+    def init(self):
+        pygame.init()
+        self.win = pg.display.set_mode((x, y))
+        pg.display.set_caption('alpha:1.0')
+        # pg.display.set_icon(pg.image.load(''))
+        self.posx = 50
+        self.posy = 50
+        self.width = 40
+        self.height = 60
+        self.speed = 4
+        self.run = True
+
         self.game_events()
 
     def game_events(self):
         while self.run:
-            #self.clock.tick(60)
-            #self.win.fill((198, 223, 144))
+            pygame.time.delay(50)
             for event in pg.event.get():
                 if event.type == pg.QUIT:
                     self.run = False
-            self.drawon()
-        pg.quit()
+            self.press_key()
+            self.win.fill((0,0,0))
+            pygame.draw.rect(self.win, (123, 123, 255), (self.posx, self.posy, self.width, self.height))
+            pygame.display.update()
+        pygame.quit()
+    def press_key(self):
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_LEFT]:
+            self.posx -= self.speed
+        if keys[pygame.K_RIGHT]:
+            self.posx += self.speed
+        if keys[pygame.K_UP]:
+            self.posy -= self.speed
+        if keys[pygame.K_DOWN]:
+            self.posy += self.speed
 
-    def drawon(self):
-        #pg.rect(self.win, (255,0,0), (0,0,100,100))
-        pg.display.update()
 
-Jersey()
+Green_Paws()
