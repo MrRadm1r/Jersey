@@ -21,7 +21,7 @@ class Jersey:
         self.run = True
         self.game()
     def game(self):
-        while run:
+        while self.run:
             pygame.time.delay(50)
             for event in pg.event.get():
                 if event.type == pg.QUIT:
