@@ -19,13 +19,9 @@ class Game:
         # Загружаем изображение фона
         self.background = pg.image.load(bg).convert()
 
-        # Загружаем изображения спрайтов
-        fire_images = [pg.image.load(image).convert_alpha() for image in FIRE_IMAGES]
-        asteroid_images = [pg.image.load(image).convert_alpha() for image in ASTEROID_IMAGES]
-
-        # Передаем начальные координаты и изображения для создания спрайта
-        self.fire_sprite = pg.sprite.Group(Sprite(fire_images))
-        self.asteroid_sprite = pg.sprite.Group(Sprite(asteroid_images))
+        # Cоздания спрайта
+        self.fire_sprite = self.create_sprite(FIRE_IMAGES)
+        self.asteroid_sprite = self.create_sprite(ASTEROID_IMAGES)
         self.clock = pg.time.Clock()
         self.running = True
         self.tick = 0
@@ -69,6 +65,11 @@ class Game:
             asteroid_sprite.move(complex(300, 400), "topright")
 
         self.clock.tick(72)  # Ограничиваем частоту обновления кадров
+
+    @staticmethod
+    def create_sprite(frames: list):
+        images = [pg.image.load(image).convert_alpha() for image in frames]
+        return pg.sprite.Group(Sprite(images))
 
 
 if __name__ == "__main__":
