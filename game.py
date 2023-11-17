@@ -1,30 +1,13 @@
 import pygame as pg
 import sys
 import os
+from sprite import Sprite
 
 # Задаем пути к папкам с изображениями
 IMG_DIR = "img"
 bg = os.path.join(IMG_DIR, "bg.png")
+FIRE_IMAGES = [os.path.join(IMG_DIR, "fire", f"fire{i}.png") for i in range(1, 4)]
 ASTEROID_IMAGES = [os.path.join(IMG_DIR, f"asteroid_{i}.png") for i in range(1, 4)]
-
-
-class Sprites(pg.sprite.Sprite):
-    def __init__(self, images):
-        super().__init__()
-        self.frame = 0
-        self.images = images
-        self.image = self.images[self.frame]
-        self.rect = self.image.get_rect(topleft=(0, 0))
-        self.animation_timer = 0
-
-    def update(self, ticks):
-        if ticks % 24 == 0:
-            self.frame = (self.frame + 1) % len(self.images)
-            self.image = self.images[self.frame]
-
-    def move(self, c: complex, position="topleft"):
-        setattr(self.rect, position, (c.real, c.imag))
-
 
 class Game:
     def __init__(self):
@@ -35,11 +18,9 @@ class Game:
         # Загружаем изображение фона
         self.background = pg.image.load(bg).convert()
 
-        # Загружаем изображения спрайтов
-        asteroid_images = [pg.image.load(image).convert_alpha() for image in ASTEROID_IMAGES]
-
-        # Передаем начальные координаты и изображения для создания спрайта
-        self.sprites = pg.sprite.Group(Sprites(asteroid_images))
+        # Cоздания спрайта
+        self.fire_sprite = self.create_sprite(FIRE_IMAGES)
+        self.asteroid_sprite = self.create_sprite(ASTEROID_IMAGES)
         self.clock = pg.time.Clock()
         self.running = True
         self.tick = 0
@@ -68,16 +49,26 @@ class Game:
         self.screen.blit(self.background, (0, 0))
 
         # Рисуем спрайты
-        self.sprites.draw(self.screen)
+        self.fire_sprite.draw(self.screen)
+        self.asteroid_sprite.draw(self.screen)
 
         pg.display.flip()
 
     def update(self):
-        for sprite in self.sprites:
-            sprite.update(self.tick)
-            sprite.move(complex(400, 300), "center")
+        for fire_sprite in self.fire_sprite:
+            fire_sprite.update(self.tick)
+            fire_sprite.move(complex(400, 300), "topleft")
+
+        for asteroid_sprite in self.asteroid_sprite:
+            asteroid_sprite.update(self.tick)
+            asteroid_sprite.move(complex(300, 400), "topright")
 
         self.clock.tick(72)  # Ограничиваем частоту обновления кадров
+
+    @staticmethod
+    def create_sprite(frames: list):
+        images = [pg.image.load(image).convert_alpha() for image in frames]
+        return pg.sprite.Group(Sprite(images))
 
 
 if __name__ == "__main__":
