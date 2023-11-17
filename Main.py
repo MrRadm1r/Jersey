@@ -2,7 +2,6 @@ import pygame as pg
 import sys
 import os
 from sprite import Sprite
-
 # Задаем пути к папкам с изображениями
 IMG_DIR = "img"
 bg = os.path.join(IMG_DIR, "bg.png")
