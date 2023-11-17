@@ -1,4 +1,3 @@
-# main.py
 import pygame as pg
 import sys
 import os
@@ -17,7 +16,7 @@ class Game:
         pg.display.set_caption("Jersey")
 
         # Загружаем изображение фона
-        self.background = pg.image.load(bg).convert()
+        self.bg = pg.image.load(bg).convert()
 
         # Создание спрайта
         self.fire_sprite = self.create_sprite(FIRE_IMAGES)
@@ -47,7 +46,7 @@ class Game:
 
     def draw(self):
         # Рисуем фон
-        self.screen.blit(self.background, (0, 0))
+        self.screen.blit(self.bg, (0, 0))
 
         # Рисуем спрайты
         self.fire_sprite.draw(self.screen)
