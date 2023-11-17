@@ -1,7 +1,7 @@
 import pygame as pg
 import sys
 import os
-# dd
+
 # Задаем пути к папкам с изображениями
 IMG_DIR = "img"
 bg = os.path.join(IMG_DIR, "bg.png")
@@ -9,24 +9,22 @@ ASTEROID_IMAGES = [os.path.join(IMG_DIR, f"asteroid_{i}.png") for i in range(1, 
 
 
 class Sprites(pg.sprite.Sprite):
-    def __init__(self, initial_position, images):
+    def __init__(self, images):
         super().__init__()
-        self.image_index = 0
+        self.frame = 0  # Было: frame_index
         self.images = images
-        self.image = self.images[self.image_index]
-        self.rect = self.image.get_rect(topleft=initial_position)
+        self.image = self.images[self.frame]
+        self.rect = self.image.get_rect(topleft=(0, 0))
         self.animation_timer = 0
 
-    def update(self, clock):
-        # Переключаем изображение каждые 6 кадров
-        # elapsed_time = clock.tick(60)  # Получаем время, прошедшее с предыдущего кадра
-        # if elapsed_time > 0:
-        #     frame_time = elapsed_time / 1000.0  # Переводим в секунды
-        #     if pg.time.get_ticks() - self.animation_timer > 6 * frame_time * 1000:
-        #         self.image_index = (self.image_index + 1) % len(self.images)
-        #         self.image = self.images[self.image_index]
-        #         self.animation_timer = pg.time.get_ticks()
-        self.image = self.images[clock]
+    def update(self, ticks: int):
+        if ticks % 24 == 0:
+            self.frame = (self.frame + 1) % len(self.images) # не даёт выйти за пределы списка
+            self.image = self.images[self.frame]
+    
+    def move(self, c: complex, position="topleft"):
+        setattr(self.rect, position, (c.real, c.imag))
+
 
 
 class Game:
@@ -42,18 +40,15 @@ class Game:
         asteroid_images = [pg.image.load(image).convert_alpha() for image in ASTEROID_IMAGES]
 
         # Передаем начальные координаты и изображения для создания спрайта
-        initial_position = (400, 300)
-        self.sprites = pg.sprite.Group(Sprites(initial_position, asteroid_images))
+        self.sprites = pg.sprite.Group(Sprites(asteroid_images))
         self.clock = pg.time.Clock()
         self.running = True
         self.tick = 0
-
-
         self.run()
 
     def run(self):
         while self.running:
-            if self.tick<59:
+            if self.tick < 71:
                 self.tick += 1
             else:
                 self.tick = 0
@@ -80,9 +75,10 @@ class Game:
 
     def update(self):
         for sprite in self.sprites:
-            print(self.tick//20)
-            sprite.update(self.tick//20)
-            sprite.rect.x += 1  # Двигаем спрайт влево на 1 пиксель при каждом обновлении
+            sprite.update(self.tick)
+            sprite.move(3j+10, "center")
+
+        self.clock.tick(72)  # Ограничиваем частоту обновления кадров
 
 
 if __name__ == "__main__":
