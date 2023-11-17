@@ -1,7 +1,7 @@
 import pygame as pg
 import sys
 import os
-
+# dd
 # Задаем пути к папкам с изображениями
 IMG_DIR = "img"
 bg = os.path.join(IMG_DIR, "bg.png")
@@ -82,7 +82,7 @@ class Game:
         for sprite in self.sprites:
             print(self.tick//20)
             sprite.update(self.tick//20)
-            sprite.rect.x = self.tick//30  # Двигаем спрайт влево на 1 пиксель при каждом обновлении
+            sprite.rect.x += 1  # Двигаем спрайт влево на 1 пиксель при каждом обновлении
 
 
 if __name__ == "__main__":
