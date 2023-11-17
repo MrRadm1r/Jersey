@@ -1,6 +1,6 @@
 import pygame as pg
 
-class Sprites(pg.sprite.Sprite):
+class Sprite(pg.sprite.Sprite):
     def __init__(self, images):
         super().__init__()
         self.frame = 0

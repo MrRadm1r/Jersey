@@ -1,13 +1,14 @@
+# main.py
 import pygame as pg
 import sys
 import os
-from sprites import Sprites  # Импортируем класс из отдельного модуля
+from sprites import Sprite
 
 # Задаем пути к папкам с изображениями
 IMG_DIR = "img"
 bg = os.path.join(IMG_DIR, "bg.png")
+FIRE_IMAGES = [os.path.join(IMG_DIR, "fire", f"fire{i}.png") for i in range(1, 4)]
 ASTEROID_IMAGES = [os.path.join(IMG_DIR, f"asteroid_{i}.png") for i in range(1, 4)]
-
 
 class Game:
     def __init__(self):
@@ -19,10 +20,12 @@ class Game:
         self.background = pg.image.load(bg).convert()
 
         # Загружаем изображения спрайтов
+        fire_images = [pg.image.load(image).convert_alpha() for image in FIRE_IMAGES]
         asteroid_images = [pg.image.load(image).convert_alpha() for image in ASTEROID_IMAGES]
 
         # Передаем начальные координаты и изображения для создания спрайта
-        self.sprites = pg.sprite.Group(Sprites(asteroid_images))
+        self.fire_sprite = pg.sprite.Group(Sprite(fire_images))
+        self.asteroid_sprite = pg.sprite.Group(Sprite(asteroid_images))
         self.clock = pg.time.Clock()
         self.running = True
         self.tick = 0
@@ -51,14 +54,19 @@ class Game:
         self.screen.blit(self.background, (0, 0))
 
         # Рисуем спрайты
-        self.sprites.draw(self.screen)
+        self.fire_sprite.draw(self.screen)
+        self.asteroid_sprite.draw(self.screen)
 
         pg.display.flip()
 
     def update(self):
-        for sprite in self.sprites:
-            sprite.update(self.tick)
-            sprite.move(complex(400, 300), "center")
+        for fire_sprite in self.fire_sprite:
+            fire_sprite.update(self.tick)
+            fire_sprite.move(complex(400, 300), "topleft")
+
+        for asteroid_sprite in self.asteroid_sprite:
+            asteroid_sprite.update(self.tick)
+            asteroid_sprite.move(complex(300, 400), "topright")
 
         self.clock.tick(72)  # Ограничиваем частоту обновления кадров
 
