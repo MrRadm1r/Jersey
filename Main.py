@@ -2,7 +2,7 @@
 import pygame as pg
 import sys
 import os
-from sprites import Sprite
+from sprite import Sprite
 
 # Задаем пути к папкам с изображениями
 IMG_DIR = "img"
@@ -19,7 +19,7 @@ class Game:
         # Загружаем изображение фона
         self.background = pg.image.load(bg).convert()
 
-        # Cоздания спрайта
+        # Создание спрайта
         self.fire_sprite = self.create_sprite(FIRE_IMAGES)
         self.asteroid_sprite = self.create_sprite(ASTEROID_IMAGES)
         self.clock = pg.time.Clock()
