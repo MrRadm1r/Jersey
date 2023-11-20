@@ -1,4 +1,5 @@
 import pygame as pg
+import numpy as np
 import sys
 import os
 from sprite import Sprite
