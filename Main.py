@@ -29,7 +29,7 @@ class Game:
 
         # Создание спрайта
         self.fire_sprite = self.create_sprite(FIRE_IMAGES)
-        # self.asteroid_sprite = self.create_sprite(ASTEROID_IMAGES)
+        self.asteroid_sprite = self.create_sprite(ASTEROID_IMAGES)
         self.asteroid_sprite_1 = self.create_sprite(ASTEROID_1)
         self.clock = pg.time.Clock()
         self.running = True

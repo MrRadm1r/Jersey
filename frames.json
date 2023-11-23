@@ -1,14 +1,24 @@
 {
-    "bg": "bg.png",
+    "bg": [
+      "bg.png"
+    ],
     "fire": [
       "fire/fire1.png",
       "fire/fire2.png",
       "fire/fire3.png"
     ],
     "asteroid": [
-      "asteroid/asteroid1.png",
-      "asteroid/asteroid2.png",
-      "asteroid/asteroid3.png"
+      "asteroids/asteroid1.png",
+      "asteroids/asteroid2.png",
+      "asteroids/asteroid3.png"
+    ],
+    "asteroid_1": [
+      "asteroid_1.png"
+    ],
+    "asteroid_2": [
+      "asteroid_2.png"
+    ],
+    "asteroid_3": [
+      "asteroid_3.png"
     ]
   }
-  
