@@ -8,9 +8,9 @@
       "fire/fire3.png"
     ],
     "asteroid": [
-      "asteroids/asteroid1.png",
-      "asteroids/asteroid2.png",
-      "asteroids/asteroid3.png"
+      "asteroids/asteroid_1.png",
+      "asteroids/asteroid_2.png",
+      "asteroids/asteroid_3.png"
     ],
     "asteroid_1": [
       "asteroid_1.png"
