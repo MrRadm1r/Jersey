@@ -14,7 +14,7 @@ with open("frames.json", "r") as file:
     ASTEROID_2 = [os.path.join(IMG_DIR, "asteroids", "asteroid_2.png")]
     ASTEROID_3 = [os.path.join(IMG_DIR, "asteroids", "asteroid_3.png")]
     D = [os.path.join(IMG_DIR, f"asteroid_{i}.png") for i in range(1, 4)]
-    ASTEROID_IMAGES = [os.path.join(IMG_DIR, "asteroids", f"asteroid_{i}.png") for i in range(1, 4)]
+    FIRE_IMAGES = [os.path.join(IMG_DIR, i) for i in frames["asteroid"]]
     del IMG_DIR
 
 
