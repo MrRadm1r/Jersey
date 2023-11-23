@@ -1,13 +1,22 @@
 import pygame as pg
-import numpy as np
+# import numpy as np
 import sys
 import os
+import json
 from sprite import Sprite
 # Задаем пути к папкам с изображениями
-IMG_DIR = "img"
-bg = os.path.join(IMG_DIR, "bg.png")
-FIRE_IMAGES = [os.path.join(IMG_DIR, "fire", f"fire{i}.png") for i in range(1, 4)]
-ASTEROID_IMAGES = [os.path.join(IMG_DIR, f"asteroid_{i}.png") for i in range(1, 4)]
+with open("frames.json", "r") as file:
+    frames = json.load(file)
+    IMG_DIR = "img"
+    bg = os.path.join(IMG_DIR, "backgrounds", "bg.png")
+    FIRE_IMAGES = [os.path.join(IMG_DIR, i) for i in frames["fire"]]
+    ASTEROID_1 = [os.path.join(IMG_DIR, "asteroids", "asteroid_1.png")]
+    ASTEROID_2 = [os.path.join(IMG_DIR, "asteroids", "asteroid_2.png")]
+    ASTEROID_3 = [os.path.join(IMG_DIR, "asteroids", "asteroid_3.png")]
+    D = [os.path.join(IMG_DIR, f"asteroid_{i}.png") for i in range(1, 4)]
+    ASTEROID_IMAGES = [os.path.join(IMG_DIR, "asteroids", f"asteroid_{i}.png") for i in range(1, 4)]
+    del IMG_DIR
+
 
 class Game:
     def __init__(self):
@@ -20,7 +29,8 @@ class Game:
 
         # Создание спрайта
         self.fire_sprite = self.create_sprite(FIRE_IMAGES)
-        self.asteroid_sprite = self.create_sprite(ASTEROID_IMAGES)
+        # self.asteroid_sprite = self.create_sprite(ASTEROID_IMAGES)
+        self.asteroid_sprite_1 = self.create_sprite(ASTEROID_1)
         self.clock = pg.time.Clock()
         self.running = True
         self.tick = 0
@@ -49,7 +59,7 @@ class Game:
             sprite.update(self.tick)
             sprite.move(complex(400, 300), "topleft")
 
-        for sprite in self.asteroid_sprite:
+        for sprite in self.asteroid_sprite_1:
             sprite.update(self.tick)
             sprite.move(complex(300, 400), "topright")
             
@@ -60,7 +70,7 @@ class Game:
 
         # Рисуем спрайты
         self.fire_sprite.draw(self.screen)
-        self.asteroid_sprite.draw(self.screen)
+        self.asteroid_sprite_1.draw(self.screen)
 
         pg.display.flip()
 

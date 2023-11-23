@@ -1,0 +1,14 @@
+{
+    "bg": "bg.png",
+    "fire": [
+      "fire/fire1.png",
+      "fire/fire2.png",
+      "fire/fire3.png"
+    ],
+    "asteroid": [
+      "asteroid/asteroid1.png",
+      "asteroid/asteroid2.png",
+      "asteroid/asteroid3.png"
+    ]
+  }
+  

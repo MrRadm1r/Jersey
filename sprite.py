@@ -1,19 +1,20 @@
 import pygame as pg
-
 fps = 72
 
 class Sprite(pg.sprite.Sprite):
-    def __init__(self, images):
+    def __init__(self, images: list):
         super().__init__()
         self.frame = 0
         self.images = images
         self.image = self.images[self.frame]
         self.lenght = len(self.images)
         self.rect = self.image.get_rect(topleft=(0, 0))
-        # self.animation_timer = 0
+        self.frames_ps = fps // self.lenght
 
-    def update(self, ticks):
-        if ticks % (fps // self.lenght) == 0:
+    def update(self, ticks:int, rate=1):
+        # tick: тик по счёту на данный момент
+        # rate: количество циклов анимации на секунду (<= self.frames_ps)
+        if ticks % (self.frames_ps // rate) == 0:
             self.frame = (self.frame + 1) % self.lenght
             self.image = self.images[self.frame]
 
