@@ -1,8 +1,5 @@
-# Пример: mypythonscript.py
-import ctypes
-
-# Загрузка динамической библиотеки
-mylib = ctypes.CDLL('./mylib.dll')  # Имя библиотеки может отличаться
-
-# Вызов функции из библиотеки
-mylib.my_function()
+from collections import Counter
+a = []
+for i in range(1000):
+    a.append(i//(1000/72))
+print(Counter(Counter(a).values()))

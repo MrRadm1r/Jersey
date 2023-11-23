@@ -24,14 +24,14 @@ class Game:
         self.clock = pg.time.Clock()
         self.running = True
         self.tick = 0
+        self.pos = 0j
         self.run()
 
     def run(self):
         while self.running:
-            if self.tick < 71:
-                self.tick += 1
-            else:
-                self.tick = 0
+            self.tick += 1 if self.tick <71 else -71
+            print(self.tick)
+
             self.handle_events()
             self.update()
             self.draw()
