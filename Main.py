@@ -80,7 +80,7 @@ class Game:
         self.clock.tick(72)  # Ограничиваем частоту обновления кадров
 
     @staticmethod
-    def create_sprite(frames: list):
+    def create_sprite(frames: list) -> pg.sprite:
         images = [pg.image.load(image).convert_alpha() for image in frames]
         return pg.sprite.Group(Sprite(images))
 

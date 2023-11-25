@@ -12,12 +12,12 @@ class Sprite(pg.sprite.Sprite):
         self.rect = self.image.get_rect(topleft=(0, 0))
         self.frames_ps = fps // self.lenght
 
-    def set_sprite(self, images: list):
-        self.images = images
-        self.image = self.images[self.frame]
-        self.lenght = len(self.images)
-        self.rect = self.image.get_rect(topleft=(0, 0))
-        self.frames_ps = fps // self.lenght
+    # def set_sprites(self, images: list):
+    #     self.images = images
+    #     self.image = self.images[self.frame]
+    #     self.lenght = len(self.images)
+    #     self.rect = self.image.get_rect(topleft=(0, 0))
+    #     self.frames_ps = fps // self.lenght
     
     @staticmethod
     def set_tick(cls, tick):
