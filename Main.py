@@ -1,10 +1,11 @@
 import pygame as pg
-# import numpy as np
 import sys
 import os
 import json
+# личные модули
 from sprite import Sprite
-# Задаем пути к папкам с изображениями
+
+# Задаём пути к папкам с изображениями через файл json
 with open("frames.json", "r") as file:
     frames = json.load(file)
     IMG_DIR = "img"
@@ -16,32 +17,28 @@ with open("frames.json", "r") as file:
     ASTEROID_IMAGES = [os.path.join(IMG_DIR, i) for i in frames["asteroid"]]
     del IMG_DIR
 
-
 class Game:
     def __init__(self):
         pg.init()
         self.screen = pg.display.set_mode((1400, 800))
         pg.display.set_caption("Jersey")
+        self.running = True # Работа основного цикла игры
+        self.clock = pg.time.Clock() # Экземпляр класса работы тиков
+        self.sprite = Sprite # Экземпляр метакласса работы со спрайтами 
 
         # Загружаем изображение фона
         self.bg = pg.image.load(bg).convert()
-
-        # Создание спрайта
-        self.fire_sprite = self.create_sprite(FIRE_IMAGES)
+        # Создание спрайтов
         self.asteroid_sprite = self.create_sprite(ASTEROID_IMAGES)
         self.asteroid_sprite_1 = self.create_sprite(ASTEROID_1)
-        self.clock = pg.time.Clock()
-        self.running = True
-        self.tick = 0
-        self.pos = 0j
-        self.run()
+        self.fire_sprite = self.create_sprite(FIRE_IMAGES)
+        self.pos = 0j # позиция основного игрока
+        self.run() # Вызов основного игрового цикла
 
     def run(self):
         # Основной игровой цикл
         while self.running:
-            self.tick += 1 if self.tick <71 else -71
-            # Sprite().set_tick(1 if Sprite().tick <71 else -71)
-
+            self.sprite.tick += 1 if self.sprite.tick < 71 else -71
             self.handle_events()
             self.update()
             self.draw()
@@ -50,7 +47,7 @@ class Game:
         # Обработчик событий
         for event in pg.event.get():
             if event.type == pg.VIDEORESIZE:
-                # Обработка события изменения размера окна
+                # Обработка изменения размера окна
                 self.screen = pg.display.set_mode((event.w, event.h), pg.RESIZABLE)
             elif event.type == pg.QUIT:
                 self.running = False
@@ -58,23 +55,21 @@ class Game:
     def update(self):
         # Отрисовка спрайтов
         for sprite in self.fire_sprite:
-            sprite.update(self.tick)
-            sprite.move(complex(400, 300), "topleft")
-
-        
+            sprite.update(self.sprite.tick//24+1)
+            sprite.move(complex(self.sprite.tick+500, 300), "topleft")
 
         for sprite in self.asteroid_sprite_1:
-            sprite.update(self.tick)
-            sprite.move(complex(300, 400), "topright")
-            
+            sprite.update(self.sprite.tick//24+1)
+            sprite.move(complex(500, 400), "topright")
 
     def draw(self):
         # Рисуем фон
         self.screen.blit(self.bg, (0, 0))
 
         # Рисуем спрайты
-        self.fire_sprite.draw(self.screen)
+        # Спрайты накладываются друг на друга
         self.asteroid_sprite_1.draw(self.screen)
+        self.fire_sprite.draw(self.screen)
 
         pg.display.flip()
         self.clock.tick(72)  # Ограничиваем частоту обновления кадров
@@ -82,8 +77,9 @@ class Game:
     @staticmethod
     def create_sprite(frames: list) -> pg.sprite:
         images = [pg.image.load(image).convert_alpha() for image in frames]
-        return pg.sprite.Group(Sprite(images))
-
+        sprite = Sprite()
+        sprite.set_sprite(images)
+        return pg.sprite.Group(sprite)
 
 if __name__ == "__main__":
     game = Game()
