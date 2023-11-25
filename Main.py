@@ -37,8 +37,10 @@ class Game:
         self.run()
 
     def run(self):
+        # Основной игровой цикл
         while self.running:
             self.tick += 1 if self.tick <71 else -71
+            # Sprite().set_tick(1 if Sprite().tick <71 else -71)
             print(self.tick)
 
             self.handle_events()
@@ -46,6 +48,7 @@ class Game:
             self.draw()
 
     def handle_events(self):
+        # Обработчик событий
         for event in pg.event.get():
             if event.type == pg.VIDEORESIZE:
                 # Обработка события изменения размера окна
@@ -54,9 +57,12 @@ class Game:
                 self.running = False
 
     def update(self):
+        # Отрисовка спрайтов
         for sprite in self.fire_sprite:
             sprite.update(self.tick)
             sprite.move(complex(400, 300), "topleft")
+
+        
 
         for sprite in self.asteroid_sprite_1:
             sprite.update(self.tick)
@@ -72,9 +78,6 @@ class Game:
         self.asteroid_sprite_1.draw(self.screen)
 
         pg.display.flip()
-
-
-
         self.clock.tick(72)  # Ограничиваем частоту обновления кадров
 
     @staticmethod
