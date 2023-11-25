@@ -41,7 +41,6 @@ class Game:
         while self.running:
             self.tick += 1 if self.tick <71 else -71
             # Sprite().set_tick(1 if Sprite().tick <71 else -71)
-            print(self.tick)
 
             self.handle_events()
             self.update()
