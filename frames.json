@@ -2,23 +2,32 @@
     "bg": [
       "bg.png"
     ],
+
+    "main_character": [
+      "characters/main/player_f.png",
+      "characters/main/player_b.png",
+      "characters/main/player_l.png",
+      "characters/main/player_r.png"
+    ],
+
     "fire": [
       "fire/fire1.png",
       "fire/fire2.png",
       "fire/fire3.png"
     ],
+
     "asteroid": [
       "asteroids/asteroid_1.png",
       "asteroids/asteroid_2.png",
       "asteroids/asteroid_3.png"
     ],
     "asteroid_1": [
-      "asteroid_1.png"
+      "asteroids/asteroid_1.png"
     ],
     "asteroid_2": [
-      "asteroid_2.png"
+      "asteroids/asteroid_2.png"
     ],
     "asteroid_3": [
-      "asteroid_3.png"
+      "asteroids/asteroid_3.png"
     ]
   }

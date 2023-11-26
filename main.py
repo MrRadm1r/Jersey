@@ -13,8 +13,8 @@ with open("frames.json", "r") as file:
     IMG_DIR = "img"
     bg = os.path.join(IMG_DIR, "backgrounds", "bg.png")
     FIRE_IMAGES = [os.path.join(IMG_DIR, i) for i in frames["fire"]]
-    ASTEROID_1 = [os.path.join(IMG_DIR, "asteroids", "asteroid_1.png")]
-
+    ASTEROID_1 = [os.path.join(IMG_DIR, i) for i in frames["asteroid_1"]]
+    MAIN_CHAR = [os.path.join(IMG_DIR, i) for i in frames["main_character"]]
     del IMG_DIR
 
 class Game:
@@ -31,6 +31,7 @@ class Game:
         # Создание спрайтов
         self.asteroid_sprite_1 = self.create_sprite(ASTEROID_1)
         self.fire_sprite = self.create_sprite(FIRE_IMAGES)
+        self.main_char = self.create_sprite(MAIN_CHAR)
         self.pos = 0j # позиция основного игрока
         self.run() # Вызов основного игрового цикла
 
@@ -59,16 +60,20 @@ class Game:
 
         for sprite in self.asteroid_sprite_1:
             sprite.update(self.tick, self.tick//24+1)
-            sprite.move(complex(500, 400), "topright")
+            sprite.move(complex(0, 400), "topleft")
+
+        for sprite in self.main_char:
+            sprite.update(self.tick, self.tick//24+1)
+            sprite.move(complex(500, 400), "topleft")
 
     def draw(self):
         # Рисуем фон
         self.screen.blit(self.bg, (0, 0))
 
         # Рисуем спрайты
-        # Спрайты накладываются друг на друга
         self.asteroid_sprite_1.draw(self.screen)
         self.fire_sprite.draw(self.screen)
+        self.main_char.draw(self.screen)
 
         pg.display.flip()
         self.clock.tick(72)  # Ограничиваем частоту обновления кадров
