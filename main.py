@@ -24,7 +24,7 @@ class Game:
         pg.display.set_caption("Jersey")
         self.running = True # Работа основного цикла игры
         self.clock = pg.time.Clock() # Экземпляр класса работы тиков
-        self.sprite = Sprite() # Экземпляр метакласса работы со спрайтами 
+        self.tick = 0 # Тик на данный момент
 
         # Загружаем изображение фона
         self.bg = pg.image.load(bg).convert()
@@ -38,7 +38,7 @@ class Game:
     def run(self):
         # Основной игровой цикл
         while self.running:
-            self.sprite.tick += 1 if self.sprite.tick < 71 else -71
+            self.tick += 1 if self.tick < 71 else -71
             self.handle_events()
             self.update()
             self.draw()
@@ -55,11 +55,11 @@ class Game:
     def update(self):
         # Отрисовка спрайтов
         for sprite in self.fire_sprite:
-            sprite.update(self.sprite.tick//24+1)
-            sprite.move(complex(self.sprite.tick+500, 300), "topleft")
+            sprite.update(self.tick, self.tick//24+1)
+            sprite.move(complex(self.tick+500, 300), "topleft")
 
         for sprite in self.asteroid_sprite_1:
-            sprite.update(self.sprite.tick//24+1)
+            sprite.update(self.tick, self.tick//24+1)
             sprite.move(complex(500, 400), "topright")
 
     def draw(self):
