@@ -26,6 +26,8 @@ class Sprite(pg.sprite.Sprite):
             self.frame = (self.frame + 1) % self.length
             self.image = self.images[self.frame]
 
+    def char_update(self, i):
+        self.image = self.images[i]
+
     def move(self, c: complex, position="topleft"):
         setattr(self.rect, position, (c.real, c.imag))
-

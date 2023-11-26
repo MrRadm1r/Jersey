@@ -29,7 +29,7 @@ class Game:
         # Создание спрайтов
         self.asteroid_sprite_1 = self.create_sprite(ASTEROID_1)
         self.fire_sprite = self.create_sprite(FIRE_IMAGES)
-        self.main_char = self.create_sprite(MAIN_CHAR)
+        self.main_char = self.create_sprite(MAIN_CHAR, 0.3)
         self.pos = 0j # позиция основного игрока
         self.run() # Вызов основного игрового цикла
 
@@ -61,11 +61,11 @@ class Game:
             sprite.move(complex(0, 400), "topleft")
 
         for sprite in self.main_char:
-            sprite.update(self.tick, self.tick//24+1)
+            sprite.char_update(0)
             sprite.move(complex(500, 400), "topleft")
 
     def draw(self):
-        # Рисуем фон
+        "draws on the screen"
         self.screen.blit(self.bg, (0, 0))
 
         # Рисуем спрайты
@@ -73,12 +73,15 @@ class Game:
         self.fire_sprite.draw(self.screen)
         self.main_char.draw(self.screen)
 
-        pg.display.flip()
+        pg.display.flip() # updates the screen
         self.clock.tick(72)  # Ограничиваем частоту обновления кадров
 
     @staticmethod
-    def create_sprite(frames: list) -> pg.sprite.Group:
+    def create_sprite(frames: list, k: float = 1.0) -> pg.sprite.Group:
+        "creates a group of sprites from a given list of images"
         images = [pg.image.load(image).convert_alpha() for image in frames]
+        if k!=1.0:
+            images = [pg.transform.scale(image, (int(image.get_width() * k), int(image.get_height() * k))) for image in images]
         sprite = Sprite()
         sprite.set_sprite(images)
         return pg.sprite.Group(sprite)
