@@ -3,7 +3,8 @@ import sys
 import os
 import json
 # личные модули
-from sprite import Sprite
+from libs.sprite import Sprite
+from libs.complex import *
 
 # Задаём пути к папкам с изображениями через файл json
 with open("frames.json", "r") as file:
@@ -28,48 +29,46 @@ class Game:
         self.bg = pg.image.load(bg).convert()
         # Создание спрайтов
         self.asteroid_sprite_1 = self.create_sprite(ASTEROID_1)
-        self.fire_sprite = self.create_sprite(FIRE_IMAGES)
-        self.main_char = self.create_sprite(MAIN_CHAR, 0.3)
+        self.fire_sprite = self.create_sprite(FIRE_IMAGES, 0.2)
+        self.main_char = self.create_sprite(MAIN_CHAR, 0.15)
         self.pos = 0j # позиция основного игрока
+        self.tvector = 0
         self.run() # Вызов основного игрового цикла
 
     def run(self):
         # Основной игровой цикл
         while self.running:
             self.tick += 1 if self.tick < 71 else -71
+            self.key = pg.key.get_pressed()
+            self.key_pressed()
             self.handle_events()
             self.update()
             self.draw()
 
-    def handle_events(self):
-        # Обработчик событий
+    def handle_events(self) -> None:
+        "Обработчик событий"
         for event in pg.event.get():
             if event.type == pg.VIDEORESIZE:
                 # Обработка изменения размера окна
                 self.screen = pg.display.set_mode((event.w, event.h), pg.RESIZABLE)
             elif event.type == pg.QUIT:
                 self.running = False
-            elif event.type == pg.KEYDOWN:
-                if event.key == pg.K_ESCAPE:
-                    self.running = False
-                elif event.key == pg.K_SPACE:
-                    print("Space key pressed")
 
-    def update(self):
-        # Отрисовка спрайтов
+    def update(self) -> None:
+        "Отрисовка спрайтов"
         for sprite in self.fire_sprite:
-            sprite.update(self.tick, self.tick//24+1)
-            sprite.move(complex(self.tick+500, 300), "topleft")
+            sprite.update(self.tick, rate=self.tick//24+1)
+            sprite.move(complex(500, 300), "topleft")
 
         for sprite in self.asteroid_sprite_1:
-            sprite.update(self.tick, self.tick//24+1)
+            sprite.update(self.tick)
             sprite.move(complex(0, 400), "topleft")
 
         for sprite in self.main_char:
             sprite.char_update(0)
-            sprite.move(complex(500, 400), "topleft")
+            sprite.move(self.pos, "topleft")
 
-    def draw(self):
+    def draw(self) -> None:
         "draws on the screen"
         self.screen.blit(self.bg, (0, 0))
 
@@ -80,6 +79,20 @@ class Game:
 
         pg.display.flip() # updates the screen
         self.clock.tick(72)  # Ограничиваем частоту обновления кадров
+
+    def key_pressed(self) -> None:
+        temp = 0
+        if self.key[pg.K_w]:
+            self.tvector += ns(-0.7j)
+        if self.key[pg.K_s]:
+            self.tvector += ns(0.7j)
+        if self.key[pg.K_a]:
+            self.tvector += ns(-0.7)
+        if self.key[pg.K_d]:
+            self.tvector += ns(0.7)
+        temp = self.tvector*0.1
+        self.tvector -= temp
+        self.pos += ns(self.tvector)
 
     @staticmethod
     def create_sprite(frames: list, k: float = 1.0) -> pg.sprite.Group:

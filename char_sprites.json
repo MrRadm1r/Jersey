@@ -1,0 +1,65 @@
+{
+    "main_char": {
+        "forward": [
+            "characters/main/player_f.png"
+        ],
+        "backward": [
+            "characters/main/player_b.png"
+        ],
+        "left": [
+            "characters/main/player_l.png"
+        ],
+        "right": [
+            "characters/main/player_r.png"
+        ],
+        "shot_1":  [
+            ""
+        ],
+        "shot_2":  [
+            ""
+        ],
+        "bomb": [
+            ""
+        ],
+        "block": [
+            ""
+        ],
+        "death": [
+            ""
+        ]
+    },
+    "Ideal": {
+        "forward": [
+            ""
+        ],
+        "backward": [
+            ""
+        ],
+        "left": [
+            ""
+        ],
+        "right": [
+            ""
+        ],
+        "scaring": [
+            ""
+        ],
+        "turn_off": [
+            ""
+        ]
+    },
+    "Poptel":{
+        "left_punch": [
+            ""
+        ],
+        "puch_punch": [
+            ""
+        ],
+        "hard_punch": [
+            ""
+        ],
+        "death": [
+            ""
+        ]
+    }
+}
