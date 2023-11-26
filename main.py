@@ -4,7 +4,6 @@ import pygame as pg
 import sys
 import os
 import json
-import cProfile
 # личные модули
 from sprite import Sprite
 
@@ -83,7 +82,8 @@ class Game:
 
 
 if __name__ == "__main__":
-    game = Game()
+    # import cProfile
     # cProfile.run("Game()", sort="cumulative")
+    game = Game()
     pg.quit()
     sys.exit()
