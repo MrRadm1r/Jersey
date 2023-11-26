@@ -1,5 +1,3 @@
-from ast import While
-from re import S
 import pygame as pg
 import sys
 import os
