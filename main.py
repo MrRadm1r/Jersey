@@ -49,6 +49,11 @@ class Game:
                 self.screen = pg.display.set_mode((event.w, event.h), pg.RESIZABLE)
             elif event.type == pg.QUIT:
                 self.running = False
+            elif event.type == pg.KEYDOWN:
+                if event.key == pg.K_ESCAPE:
+                    self.running = False
+                elif event.key == pg.K_SPACE:
+                    print("Space key pressed")
 
     def update(self):
         # Отрисовка спрайтов
