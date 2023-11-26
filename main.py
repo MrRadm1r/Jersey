@@ -1,7 +1,10 @@
+from ast import While
+from re import S
 import pygame as pg
 import sys
 import os
 import json
+import cProfile
 # личные модули
 from sprite import Sprite
 
@@ -12,15 +15,13 @@ with open("frames.json", "r") as file:
     bg = os.path.join(IMG_DIR, "backgrounds", "bg.png")
     FIRE_IMAGES = [os.path.join(IMG_DIR, i) for i in frames["fire"]]
     ASTEROID_1 = [os.path.join(IMG_DIR, "asteroids", "asteroid_1.png")]
-    ASTEROID_2 = [os.path.join(IMG_DIR, "asteroids", "asteroid_2.png")]
-    ASTEROID_3 = [os.path.join(IMG_DIR, "asteroids", "asteroid_3.png")]
-    ASTEROID_IMAGES = [os.path.join(IMG_DIR, i) for i in frames["asteroid"]]
+
     del IMG_DIR
 
 class Game:
     def __init__(self):
         pg.init()
-        self.screen = pg.display.set_mode((1400, 800))
+        self.screen = pg.display.set_mode((1400, 800), pg.RESIZABLE)
         pg.display.set_caption("Jersey")
         self.running = True # Работа основного цикла игры
         self.clock = pg.time.Clock() # Экземпляр класса работы тиков
@@ -29,7 +30,6 @@ class Game:
         # Загружаем изображение фона
         self.bg = pg.image.load(bg).convert()
         # Создание спрайтов
-        self.asteroid_sprite = self.create_sprite(ASTEROID_IMAGES)
         self.asteroid_sprite_1 = self.create_sprite(ASTEROID_1)
         self.fire_sprite = self.create_sprite(FIRE_IMAGES)
         self.pos = 0j # позиция основного игрока
@@ -84,5 +84,6 @@ class Game:
 
 if __name__ == "__main__":
     game = Game()
+    # cProfile.run("Game()", sort="cumulative")
     pg.quit()
     sys.exit()
