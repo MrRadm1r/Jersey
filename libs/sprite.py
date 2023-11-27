@@ -19,6 +19,7 @@ class Sprite(pg.sprite.Sprite):
         self.frames_ps = fps // self.length  # Пересчитываем frames_ps после установки images
 
     def update(self, tick, rate=1) -> None:
+        "Обновляет спрайты"
         if self.length == 0:
             raise ValueError("No images set. Call set_sprite method first.")
         

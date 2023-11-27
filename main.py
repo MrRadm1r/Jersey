@@ -11,6 +11,7 @@ with open("frames.json", "r") as file:
     frames = json.load(file)
     IMG_DIR = "img"
     bg = os.path.join(IMG_DIR, "backgrounds", "bg.png")
+    BIGBG = os.path.join(IMG_DIR, "backgrounds", "BIGBG.png")
     FIRE_IMAGES = [os.path.join(IMG_DIR, i) for i in frames["fire"]]
     ASTEROID_1 = [os.path.join(IMG_DIR, i) for i in frames["asteroid_1"]]
     MAIN_CHAR = [os.path.join(IMG_DIR, i) for i in frames["main_character"]]
@@ -18,8 +19,10 @@ with open("frames.json", "r") as file:
 
 class Game:
     def __init__(self):
-        pg.init()
-        self.screen = pg.display.set_mode((1400, 800), pg.RESIZABLE)
+        self.w = 1400
+        self.h = 800
+        pg.init() # инициализация пайгейм на всякий пожарный
+        self.screen = pg.display.set_mode((self.w, self.h), pg.RESIZABLE)
         pg.display.set_caption("Jersey")
         self.running = True # Работа основного цикла игры
         self.clock = pg.time.Clock() # Экземпляр класса работы тиков
@@ -27,12 +30,14 @@ class Game:
 
         # Загружаем изображение фона
         self.bg = pg.image.load(bg).convert()
+        self.BIGBG = pg.image.load(BIGBG).convert()
         # Создание спрайтов
         self.asteroid_sprite_1 = self.create_sprite(ASTEROID_1)
         self.fire_sprite = self.create_sprite(FIRE_IMAGES, 0.2)
         self.main_char = self.create_sprite(MAIN_CHAR, 0.15)
         self.pos = 0j # позиция основного игрока
         self.tvector = 0
+        self.fps = []
         self.run() # Вызов основного игрового цикла
 
     def run(self):
@@ -44,6 +49,9 @@ class Game:
             self.handle_events()
             self.update()
             self.draw()
+            self.fps.append(self.clock.get_fps())
+            print(sum(self.fps)/len(self.fps))
+            # print(self.fps)
 
     def handle_events(self) -> None:
         "Обработчик событий"
@@ -56,17 +64,17 @@ class Game:
 
     def update(self) -> None:
         "Отрисовка спрайтов"
-        for sprite in self.fire_sprite:
-            sprite.update(self.tick, rate=self.tick//24+1)
-            sprite.move(complex(500, 300), "topleft")
-
         for sprite in self.asteroid_sprite_1:
             sprite.update(self.tick)
             sprite.move(complex(0, 400), "topleft")
 
+        for sprite in self.fire_sprite:
+            sprite.update(self.tick, rate=2.5)
+            sprite.move(self.pos+100j, "center")
+
         for sprite in self.main_char:
             sprite.char_update(0)
-            sprite.move(self.pos, "topleft")
+            sprite.move(self.pos, "center")
 
     def draw(self) -> None:
         "draws on the screen"
@@ -81,6 +89,7 @@ class Game:
         self.clock.tick(72)  # Ограничиваем частоту обновления кадров
 
     def key_pressed(self) -> None:
+        "pressed key"
         temp = 0
         if self.key[pg.K_w]:
             self.tvector += ns(-0.7j)
@@ -90,7 +99,7 @@ class Game:
             self.tvector += ns(-0.7)
         if self.key[pg.K_d]:
             self.tvector += ns(0.7)
-        temp = self.tvector*0.1
+        temp = self.tvector*0.13
         self.tvector -= temp
         self.pos += ns(self.tvector)
 
