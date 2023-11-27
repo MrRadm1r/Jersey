@@ -35,7 +35,7 @@ class Game:
         self.asteroid_sprite_1 = self.create_sprite(ASTEROID_1)
         self.fire_sprite = self.create_sprite(FIRE_IMAGES, 0.2)
         self.main_char = self.create_sprite(MAIN_CHAR, 0.15)
-        self.pos = 0j # позиция основного игрока
+        self.pos = self.w*0.5+self.h*0.5j # позиция основного игрока
         self.tvector = 0
         self.fps = []
         self.run() # Вызов основного игрового цикла
