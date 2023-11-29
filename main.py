@@ -21,10 +21,11 @@ class Game:
     def __init__(self):
         self.w = 1400
         self.h = 800
-        self.speed = 10
-        self.l = 50
+        self.speed = 8
+        self.l = 15
         self.fsc = [0]*self.l
         self.ssc = [0]*self.l
+        self.dsc = [[0j]*self.l]*2
         pg.init() # инициализация пайгейм на всякий пожарный
         self.screen = pg.display.set_mode((self.w, self.h), pg.RESIZABLE)
         pg.display.set_caption("Jersey")
@@ -82,7 +83,7 @@ class Game:
 
     def draw(self) -> None:
         "draws on the screen"
-        self.screen.blit(self.bg, (0, 0))
+        self.screen.blit(self.bg, (0, 0)) # Рисуем Фон
 
         # Рисуем спрайты
         self.asteroid_sprite_1.draw(self.screen)
@@ -105,10 +106,7 @@ class Game:
             self.tvector += self.speed
         self.tvector = ns(self.tvector)
         self.inertia()
-        self.fsc = self.fsc[1:]+[self.tvector.real+self.tvector.imag*1j]
-        self.ssc = self.ssc[1:]+[sum(self.fsc)/len(self.fsc)]
-        
-        self.pos += sum(self.ssc)/len(self.ssc)
+        self.pos += self.tvector
 
     @staticmethod
     def create_sprite(frames: list, k: float = 1.0) -> pg.sprite.Group:
@@ -121,9 +119,9 @@ class Game:
         return pg.sprite.Group(sprite)
     
     def inertia(self):
-        self.fsc = self.fsc[1:]+[complex(self.tvector.real+self.tvector.imag)]
-        self.ssc = self.ssc[1:]+[sum(self.fsc)/len(self.fsc)]
-        self.tvector = self.ssc
+        self.dsc[0] = self.dsc[0][1:]+[self.tvector.real+self.tvector.imag*1j]
+        self.dsc[1] = self.dsc[1][1:]+[sum(self.dsc[0])/len(self.dsc[0])]
+        self.tvector = sum(self.dsc[1])/len(self.dsc[1])
 
 
 
