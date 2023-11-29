@@ -21,6 +21,10 @@ class Game:
     def __init__(self):
         self.w = 1400
         self.h = 800
+        self.speed = 10
+        self.l = 50
+        self.fsc = [0]*self.l
+        self.ssc = [0]*self.l
         pg.init() # инициализация пайгейм на всякий пожарный
         self.screen = pg.display.set_mode((self.w, self.h), pg.RESIZABLE)
         pg.display.set_caption("Jersey")
@@ -49,8 +53,8 @@ class Game:
             self.handle_events()
             self.update()
             self.draw()
-            self.fps.append(self.clock.get_fps())
-            print(sum(self.fps)/len(self.fps))
+            # self.fps.append(self.clock.get_fps())
+            # print(sum(self.fps)/len(self.fps))
             # print(self.fps)
 
     def handle_events(self) -> None:
@@ -90,18 +94,21 @@ class Game:
 
     def key_pressed(self) -> None:
         "pressed key"
-        temp = 0
+        self.tvector = 0
         if self.key[pg.K_w]:
-            self.tvector += ns(-0.7j)
+            self.tvector += -self.speed*1j
         if self.key[pg.K_s]:
-            self.tvector += ns(0.7j)
+            self.tvector += self.speed*1j
         if self.key[pg.K_a]:
-            self.tvector += ns(-0.7)
+            self.tvector += -self.speed
         if self.key[pg.K_d]:
-            self.tvector += ns(0.7)
-        temp = self.tvector*0.13
-        self.tvector -= temp
-        self.pos += ns(self.tvector)
+            self.tvector += self.speed
+        self.tvector = ns(self.tvector)
+        self.inertia()
+        self.fsc = self.fsc[1:]+[self.tvector.real+self.tvector.imag*1j]
+        self.ssc = self.ssc[1:]+[sum(self.fsc)/len(self.fsc)]
+        
+        self.pos += sum(self.ssc)/len(self.ssc)
 
     @staticmethod
     def create_sprite(frames: list, k: float = 1.0) -> pg.sprite.Group:
@@ -112,6 +119,12 @@ class Game:
         sprite = Sprite()
         sprite.set_sprite(images)
         return pg.sprite.Group(sprite)
+    
+    def inertia(self):
+        self.fsc = self.fsc[1:]+[complex(self.tvector.real+self.tvector.imag)]
+        self.ssc = self.ssc[1:]+[sum(self.fsc)/len(self.fsc)]
+        self.tvector = self.ssc
+
 
 
 if __name__ == "__main__":
