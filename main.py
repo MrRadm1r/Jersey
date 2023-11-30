@@ -12,9 +12,8 @@ with open("frames.json", "r") as file:
     IMG_DIR = "img"
     bg = os.path.join(IMG_DIR, "backgrounds", "bg.png")
     BIGBG = os.path.join(IMG_DIR, "backgrounds", "BIGBG.png")
-    FIRE_IMAGES = [os.path.join(IMG_DIR, i) for i in frames["fire"]]
     ASTEROID_1 = [os.path.join(IMG_DIR, i) for i in frames["asteroid_1"]]
-    MAIN_CHAR = [os.path.join(IMG_DIR, i) for i in frames["main_character"]]
+    MAIN_CHAR = [os.path.join(IMG_DIR, i) for i in frames["main_character"]["up"]]
     del IMG_DIR
 
 class Game:
@@ -38,7 +37,6 @@ class Game:
         self.BIGBG = pg.image.load(BIGBG).convert()
         # Создание спрайтов
         self.asteroid_sprite_1 = self.create_sprite(ASTEROID_1)
-        self.fire_sprite = self.create_sprite(FIRE_IMAGES, 0.2)
         self.main_char = self.create_sprite(MAIN_CHAR, 0.15)
         self.pos = self.w*0.5+self.h*0.5j # позиция основного игрока
         self.tvector = 0
@@ -73,12 +71,12 @@ class Game:
             sprite.update(self.tick)
             sprite.move(complex(0, 400), "topleft")
 
-        for sprite in self.fire_sprite:
-            sprite.update(self.tick, rate=2.5)
-            sprite.move(self.pos+100j, "center")
+        # for sprite in self.fire_sprite:
+        #     sprite.update(self.tick, rate=2.5)
+        #     sprite.move(self.pos+100j, "center")
 
         for sprite in self.main_char:
-            sprite.char_update(0)
+            sprite.update(self.tick, rate=2.5)
             sprite.move(self.pos, "center")
 
     def draw(self) -> None:
@@ -87,7 +85,6 @@ class Game:
 
         # Рисуем спрайты
         self.asteroid_sprite_1.draw(self.screen)
-        self.fire_sprite.draw(self.screen)
         self.main_char.draw(self.screen)
 
         pg.display.flip() # updates the screen
