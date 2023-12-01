@@ -4,15 +4,18 @@
   ],
   
   "main_character": {
+    "stay": [
+      "characters/main_char/stay/stay_1.png"
+    ],
     "up": [
-      "characters/main_char/up_1.png",
-      "characters/main_char/up_2.png",
-      "characters/main_char/up_3.png"
+      "characters/main_char/up/up_1.png",
+      "characters/main_char/up/up_2.png",
+      "characters/main_char/up/up_3.png"
     ],
     "down": [
-      "characters/main_char/down_1.png",
-      "characters/main_char/down_2.png",
-      "characters/main_char/down_3.png"
+      "characters/main_char/down/down_1.png",
+      "characters/main_char/down/down_2.png",
+      "characters/main_char/down/down_3.png"
     ]
   },
 

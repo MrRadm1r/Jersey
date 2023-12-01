@@ -1,16 +1,14 @@
 {
-    "main_char": {
-        "forward": [
-            "characters/main/player_f.png"
+    "main_character": {
+        "up": [
+          "characters/main_char/up_1.png",
+          "characters/main_char/up_2.png",
+          "characters/main_char/up_3.png"
         ],
-        "backward": [
-            "characters/main/player_b.png"
-        ],
-        "left": [
-            "characters/main/player_l.png"
-        ],
-        "right": [
-            "characters/main/player_r.png"
+        "down": [
+          "characters/main_char/down_1.png",
+          "characters/main_char/down_2.png",
+          "characters/main_char/down_3.png"
         ],
         "shot_1":  [
             ""
@@ -29,10 +27,10 @@
         ]
     },
     "Ideal": {
-        "forward": [
+        "up": [
             ""
         ],
-        "backward": [
+        "down": [
             ""
         ],
         "left": [

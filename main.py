@@ -69,10 +69,6 @@ class Game:
             sprite.update(self.tick)
             sprite.move(complex(0, 400), "topleft")
 
-        # for sprite in self.fire_sprite:
-        #     sprite.update(self.tick, rate=2.5)
-        #     sprite.move(self.pos+100j, "center")
-
         for sprite in self.main_char:
             sprite.update(self.tick, rate=2.5)
             sprite.move(self.pos, "center")
