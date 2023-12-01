@@ -4,7 +4,7 @@ import os
 import json
 # личные модули
 from libs.sprite import Sprite
-from libs.complex import *
+from libs.movement import *
 
 # Задаём пути к папкам с изображениями через файл json
 with open("frames.json", "r") as file:
@@ -22,8 +22,6 @@ class Game:
         self.h = 800
         self.speed = 8
         self.l = 15
-        self.fsc = [0]*self.l
-        self.ssc = [0]*self.l
         self.dsc = [[0j]*self.l]*2
         pg.init() # инициализация пайгейм на всякий пожарный
         self.screen = pg.display.set_mode((self.w, self.h), pg.RESIZABLE)
@@ -102,7 +100,7 @@ class Game:
         if self.key[pg.K_d]:
             self.tvector += self.speed
         self.tvector = ns(self.tvector)
-        self.inertia()
+        self.tvector = inertia(self.tvector)
         self.pos += self.tvector
 
     @staticmethod
@@ -114,12 +112,6 @@ class Game:
         sprite = Sprite()
         sprite.set_sprite(images)
         return pg.sprite.Group(sprite)
-    
-    def inertia(self):
-        self.dsc[0] = self.dsc[0][1:]+[self.tvector.real+self.tvector.imag*1j]
-        self.dsc[1] = self.dsc[1][1:]+[sum(self.dsc[0])/len(self.dsc[0])]
-        self.tvector = sum(self.dsc[1])/len(self.dsc[1])
-
 
 
 if __name__ == "__main__":
