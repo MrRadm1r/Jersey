@@ -13,7 +13,15 @@ with open("frames.json", "r") as file:
     bg = os.path.join(IMG_DIR, "backgrounds", "bg.png")
     BIGBG = os.path.join(IMG_DIR, "backgrounds", "BIGBG.png")
     ASTEROID_1 = [os.path.join(IMG_DIR, i) for i in frames["asteroid_1"]]
-    MAIN_CHAR = [os.path.join(IMG_DIR, i) for i in frames["main_character"]["up"]]
+    # MAIN_CHAR = [os.path.join(IMG_DIR, i) for i in frames["main_character"]]
+    # MAIN_CHAR = [os.path.join(IMG_DIR, i) for i in [j for j in frames["main_character"]]]
+    # MAIN_CHAR = [i for i in frames["main_character"]]
+
+    MAIN_CHAR = []
+    for i in frames["main_character"]:
+        MAIN_CHAR.append([os.path.join(IMG_DIR, e) for e in i])
+    # print(MAIN_CHAR)
+    
     del IMG_DIR
 
 class Game:
@@ -35,7 +43,7 @@ class Game:
         self.BIGBG = pg.image.load(BIGBG).convert()
         # Создание спрайтов
         self.asteroid_sprite_1 = self.create_sprite(ASTEROID_1)
-        self.main_char = self.create_sprite(MAIN_CHAR, 0.15)
+        self.main_char = self.create_sprite(MAIN_CHAR, 0.15, mode=1)
         self.pos = self.w*0.5+self.h*0.5j # позиция основного игрока
         self.tvector = 0
         self.fps = []
@@ -70,7 +78,7 @@ class Game:
             sprite.move(complex(0, 400), "topleft")
 
         for sprite in self.main_char:
-            sprite.update(self.tick, rate=2.5)
+            sprite.char_update(self.tick, rate=2.5)
             sprite.move(self.pos, "center")
 
     def draw(self) -> None:
@@ -100,14 +108,34 @@ class Game:
         self.pos += self.tvector
 
     @staticmethod
-    def create_sprite(frames: list, k: float = 1.0) -> pg.sprite.Group:
+    def create_sprite(frames: list, k: float = 1.0, mode=0) -> pg.sprite.Group:
         "creates a group of sprites from a given list of images"
-        images = [pg.image.load(image).convert_alpha() for image in frames]
-        if k!=1.0:
-            images = [pg.transform.scale(image, (int(image.get_width() * k), int(image.get_height() * k))) for image in images]
-        sprite = Sprite()
-        sprite.set_sprite(images)
-        return pg.sprite.Group(sprite)
+        if not mode:
+            images = [pg.image.load(image).convert_alpha() for image in frames]
+            if k!=1.0:
+                images = [pg.transform.scale(image, (int(image.get_width() * k), int(image.get_height() * k))) for image in images]
+            sprite = Sprite()
+            sprite.set_sprite(images)
+            return pg.sprite.Group(sprite)
+        else:
+            temp = []
+            tempm = []
+            images = []
+            for i in frames:
+                for image in i:
+                    temp.append(pg.image.load(image).convert_alpha())
+                tempm.append(temp)
+                temp = []
+            if k!=1.0:
+                for i in tempm:
+                    for image in i:
+                        temp.append(pg.transform.scale(image, (int(image.get_width() * k), int(image.get_height() * k))))
+                    images.append(temp)
+                    temp = []
+            sprite = Sprite()
+            # print(images)
+            sprite.set_char_sprite(images)
+            return pg.sprite.Group(sprite)
 
 
 if __name__ == "__main__":
