@@ -1,52 +1,37 @@
 import pygame as pg
-fps = 72
+from libs.decrypt import *
+fps = decrypt('configs/config.encrypted', "PSD1LpXi3H77JX7B5_dcm29sjXcmN5fDa5tgnEP8ySg=", "fps")
 
 
 class Sprite(pg.sprite.Sprite):
     def __init__(self):
         super().__init__()
-        self.images = []  # list[pg.Surface]|list[list[pg.Surface]] list of sprites
-        self.char_images = []  # list of character sprites EX
+        self.images = []  # list[list[pg.Surface]] list of sprites
         self.frame = 0  # index of active sprite
-        self.length = None  # int|dict number of sprites
-        self.char_length = {}  # number of sprites EX
-        self.frames_ps = 0  # frames per second
-        self.char_frames_ps = dict()  # frames per second EX
+        self.length = {}  # int|dict number of sprites
+        self.frames_ps = {}  # frames per second
         self.image = None  # active sprite
-        self.rect = None  # collision
+        self.rect = None # collision
+        self.tick = 0
 
-    # def set_sprite(self, images: list):
-    #     self.images = images
-    #     self.length = len(self.images)
-    #     if self.length == 0:  # Убрать, при конечной компиляции кода #C11
-    #         raise ValueError("No images set. Call set_sprite method first.")
-    #     self.image = self.images[self.frame]
-    #     self.rect = self.image.get_rect(topleft=(0, 0))
-    #     self.frames_ps = fps // self.length  # Пересчитываем frames_ps после установки images
-# 
-    # def update(self, tick, rate=1) -> None:
-    #     "Обновление спрайтов"
-    #     if not self.length:
-    #         self.length = 0
-    #     if tick % (self.frames_ps // rate) == 0:
-    #         self.frame = (self.frame + 1) % self.length
-    #         self.image = self.images[self.frame]
-
-    def set_char_sprite(self, images: list): # EX
+    def set_sprite(self, images: list) -> None:
+        "Declaring sprites"
         self.images = images
         for i in range(len(self.images)):
-            self.char_length[i] = len(self.images[i])
-            self.char_frames_ps[i] = fps // self.char_length[i]
-        if self.char_length == 0:  # Убрать, при конечной компиляции кода #C11
+            self.length[i] = len(self.images[i])
+            self.frames_ps[i] = fps // self.length[i]
+        if self.length == 0:  # Убрать, при конечной компиляции кода #C11
             raise ValueError("No images set. Call set_sprite method first.")
         self.image = self.images[0][self.frame]
         self.rect = self.image.get_rect(topleft=(0, 0))
 
-    def char_update(self, tick, index=0, rate=1): # EX
-        "Обновление спрайтов сущностей"
-        if tick % (self.char_frames_ps[index] // rate) == 0:
-            self.frame = (self.frame + 1) % self.char_length[index]
+    def update(self, index=0, rate=1, debug=0) -> None:
+        "Updating sprites"
+        self.tick += 1 if self.tick < 71 else -71
+        if self.tick % (self.frames_ps[index] // rate) == 0:
+            self.frame = (self.frame + 1) % self.length[index]
             self.image = self.images[index][self.frame]
+        # print(self.tick)
 
     def move(self, c: complex, position="topleft"):
         setattr(self.rect, position, (c.real, c.imag))

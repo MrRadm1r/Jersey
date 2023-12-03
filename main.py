@@ -3,8 +3,10 @@ import sys
 import os
 import json
 # личные модули
-from libs.sprite import Sprite
-from libs.movement import *
+from libs.sprite import *     # Sprites
+from libs.movement import *   # Movement
+from libs.decrypt import *    # decrypt config file
+key = "PSD1LpXi3H77JX7B5_dcm29sjXcmN5fDa5tgnEP8ySg="
 
 def full_path(path_key: str) -> list[list[str]]:
     "takes paths of sprites from json file by key"
@@ -17,15 +19,17 @@ with open("frames.json", "r") as file:
     bg = os.path.join("img", "backgrounds", "bg.png")
     MAIN_CHAR = full_path("main_character")
     ASTEROID_1 = full_path("asteroid_1")
+    ASTEROIDS_1 = full_path("asteroid")
+    ASTEROIDS_2 = full_path("asteroid")
+    ASTEROIDS_3 = full_path("asteroid")
 
 class Game:
     def __init__(self) -> None:
         pg.init() # инициализация пайгейм на всякий пожарный
-        self.w = 1400
-        self.h = 800
+        self.w = decrypt('configs/config.encrypted', key, "width")
+        self.h = decrypt('configs/config.encrypted', key, "height")
         self.speed = 8
         self.l = 15
-        self.dsc = [[0j]*self.l]*2
         self.screen = pg.display.set_mode((self.w, self.h), pg.RESIZABLE)
         pg.display.set_caption("Jersey")
         self.running = True # Работа основного цикла игры
@@ -66,11 +70,11 @@ class Game:
     def update(self) -> None:
         "Отрисовка спрайтов"
         for sprite in self.asteroid_sprite_1:
-            sprite.char_update(self.tick)
+            sprite.update()
             sprite.move(complex(0, 400), "topleft")
 
         for sprite in self.main_char:
-            sprite.char_update(self.tick, index=0, rate=2.5)
+            sprite.update(index=0, rate=2.5)
             sprite.move(self.pos, "center")
 
     def draw(self) -> None:
@@ -103,7 +107,7 @@ class Game:
             if k!=1.0:
                 images = [pg.transform.scale(image, (int(image.get_width() * k), int(image.get_height() * k))) for image in images]
             sprite = Sprite()
-            sprite.set_char_sprite(images)
+            sprite.set_sprite(images)
             return pg.sprite.Group(sprite)
         else:
             images = [[pg.image.load(image) for image in i] for i in frames]
@@ -112,7 +116,7 @@ class Game:
             else:
                 images = [[pg.transform.scale(image, (int(image.get_width() * k), int(image.get_height() * k))) for image in i] for i in images]
             sprite = Sprite()
-            sprite.set_char_sprite(images)
+            sprite.set_sprite(images)
             return pg.sprite.Group(sprite)
 
 
