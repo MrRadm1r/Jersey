@@ -11,7 +11,6 @@ with open("frames.json", "r") as file:
     frames = json.load(file)
     IMG_DIR = "img"
     bg = os.path.join(IMG_DIR, "backgrounds", "bg.png")
-    BIGBG = os.path.join(IMG_DIR, "backgrounds", "BIGBG.png")
     ASTEROID_1 = [os.path.join(IMG_DIR, i) for i in frames["asteroid_1"]]
     # MAIN_CHAR = [os.path.join(IMG_DIR, i) for i in frames["main_character"]]
     # MAIN_CHAR = [os.path.join(IMG_DIR, i) for i in [j for j in frames["main_character"]]]
@@ -25,13 +24,13 @@ with open("frames.json", "r") as file:
     del IMG_DIR
 
 class Game:
-    def __init__(self):
+    def __init__(self) -> None:
+        pg.init() # инициализация пайгейм на всякий пожарный
         self.w = 1400
         self.h = 800
         self.speed = 8
         self.l = 15
         self.dsc = [[0j]*self.l]*2
-        pg.init() # инициализация пайгейм на всякий пожарный
         self.screen = pg.display.set_mode((self.w, self.h), pg.RESIZABLE)
         pg.display.set_caption("Jersey")
         self.running = True # Работа основного цикла игры
@@ -40,7 +39,6 @@ class Game:
 
         # Загружаем изображение фона
         self.bg = pg.image.load(bg).convert()
-        self.BIGBG = pg.image.load(BIGBG).convert()
         # Создание спрайтов
         self.asteroid_sprite_1 = self.create_sprite(ASTEROID_1)
         self.main_char = self.create_sprite(MAIN_CHAR, 0.15, mode=1)
@@ -49,7 +47,7 @@ class Game:
         self.fps = []
         self.run() # Вызов основного игрового цикла
 
-    def run(self):
+    def run(self) -> None:
         # Основной игровой цикл
         while self.running:
             self.tick += 1 if self.tick < 71 else -71
@@ -78,7 +76,7 @@ class Game:
             sprite.move(complex(0, 400), "topleft")
 
         for sprite in self.main_char:
-            sprite.char_update(self.tick, rate=2.5)
+            sprite.char_update(self.tick, index=0, rate=2.5)
             sprite.move(self.pos, "center")
 
     def draw(self) -> None:
@@ -95,14 +93,10 @@ class Game:
     def key_pressed(self) -> None:
         "pressed key"
         self.tvector = 0
-        if self.key[pg.K_w]:
-            self.tvector += -self.speed*1j
-        if self.key[pg.K_s]:
-            self.tvector += self.speed*1j
-        if self.key[pg.K_a]:
-            self.tvector += -self.speed
-        if self.key[pg.K_d]:
-            self.tvector += self.speed
+        if self.key[pg.K_w]: self.tvector += -self.speed*1j
+        if self.key[pg.K_s]: self.tvector += self.speed*1j
+        if self.key[pg.K_a]: self.tvector += -self.speed
+        if self.key[pg.K_d]: self.tvector += self.speed
         self.tvector = ns(self.tvector)
         self.tvector = inertia(self.tvector)
         self.pos += self.tvector
@@ -133,7 +127,6 @@ class Game:
                     images.append(temp)
                     temp = []
             sprite = Sprite()
-            # print(images)
             sprite.set_char_sprite(images)
             return pg.sprite.Group(sprite)
 
