@@ -6,22 +6,17 @@ import json
 from libs.sprite import Sprite
 from libs.movement import *
 
+def full_path(path_key: str) -> list[list[str]]:
+    "takes paths of sprites from json file by key"
+    IMG_DIR = "img"
+    return [[os.path.join(IMG_DIR, path) for path in i] for i in frames[path_key]]
+
 # Задаём пути к папкам с изображениями через файл json
 with open("frames.json", "r") as file:
     frames = json.load(file)
-    IMG_DIR = "img"
-    bg = os.path.join(IMG_DIR, "backgrounds", "bg.png")
-    ASTEROID_1 = [os.path.join(IMG_DIR, i) for i in frames["asteroid_1"]]
-    # MAIN_CHAR = [os.path.join(IMG_DIR, i) for i in frames["main_character"]]
-    # MAIN_CHAR = [os.path.join(IMG_DIR, i) for i in [j for j in frames["main_character"]]]
-    # MAIN_CHAR = [i for i in frames["main_character"]]
-
-    MAIN_CHAR = []
-    for i in frames["main_character"]:
-        MAIN_CHAR.append([os.path.join(IMG_DIR, e) for e in i])
-    # print(MAIN_CHAR)
-    
-    del IMG_DIR
+    bg = os.path.join("img", "backgrounds", "bg.png")
+    MAIN_CHAR = full_path("main_character")
+    ASTEROID_1 = full_path("asteroid_1")
 
 class Game:
     def __init__(self) -> None:
@@ -36,11 +31,10 @@ class Game:
         self.running = True # Работа основного цикла игры
         self.clock = pg.time.Clock() # Экземпляр класса работы тиков
         self.tick = 0 # Тик на данный момент
-
         # Загружаем изображение фона
         self.bg = pg.image.load(bg).convert()
         # Создание спрайтов
-        self.asteroid_sprite_1 = self.create_sprite(ASTEROID_1)
+        self.asteroid_sprite_1 = self.create_sprite(ASTEROID_1, mode=1)
         self.main_char = self.create_sprite(MAIN_CHAR, 0.15, mode=1)
         self.pos = self.w*0.5+self.h*0.5j # позиция основного игрока
         self.tvector = 0
@@ -48,7 +42,7 @@ class Game:
         self.run() # Вызов основного игрового цикла
 
     def run(self) -> None:
-        # Основной игровой цикл
+        "Main Game cycle"
         while self.running:
             self.tick += 1 if self.tick < 71 else -71
             self.key = pg.key.get_pressed()
@@ -72,7 +66,7 @@ class Game:
     def update(self) -> None:
         "Отрисовка спрайтов"
         for sprite in self.asteroid_sprite_1:
-            sprite.update(self.tick)
+            sprite.char_update(self.tick)
             sprite.move(complex(0, 400), "topleft")
 
         for sprite in self.main_char:
@@ -102,30 +96,21 @@ class Game:
         self.pos += self.tvector
 
     @staticmethod
-    def create_sprite(frames: list, k: float = 1.0, mode=0) -> pg.sprite.Group:
+    def create_sprite(frames, k: float = 1.0, mode=0) -> pg.sprite.Group:
         "creates a group of sprites from a given list of images"
-        if not mode:
+        if not mode:  # Надо постараться удалить это
             images = [pg.image.load(image).convert_alpha() for image in frames]
             if k!=1.0:
                 images = [pg.transform.scale(image, (int(image.get_width() * k), int(image.get_height() * k))) for image in images]
             sprite = Sprite()
-            sprite.set_sprite(images)
+            sprite.set_char_sprite(images)
             return pg.sprite.Group(sprite)
         else:
-            temp = []
-            tempm = []
-            images = []
-            for i in frames:
-                for image in i:
-                    temp.append(pg.image.load(image).convert_alpha())
-                tempm.append(temp)
-                temp = []
-            if k!=1.0:
-                for i in tempm:
-                    for image in i:
-                        temp.append(pg.transform.scale(image, (int(image.get_width() * k), int(image.get_height() * k))))
-                    images.append(temp)
-                    temp = []
+            images = [[pg.image.load(image) for image in i] for i in frames]
+            if k==1.0:
+                pass
+            else:
+                images = [[pg.transform.scale(image, (int(image.get_width() * k), int(image.get_height() * k))) for image in i] for i in images]
             sprite = Sprite()
             sprite.set_char_sprite(images)
             return pg.sprite.Group(sprite)

@@ -15,22 +15,22 @@ class Sprite(pg.sprite.Sprite):
         self.image = None  # active sprite
         self.rect = None  # collision
 
-    def set_sprite(self, images: list):
-        self.images = images
-        self.length = len(self.images)
-        if self.length == 0:  # Убрать, при конечной компиляции кода #C11
-            raise ValueError("No images set. Call set_sprite method first.")
-        self.image = self.images[self.frame]
-        self.rect = self.image.get_rect(topleft=(0, 0))
-        self.frames_ps = fps // self.length  # Пересчитываем frames_ps после установки images
-
-    def update(self, tick, rate=1) -> None:
-        "Обновление спрайтов"
-        if not self.length:
-            self.length = 0
-        if tick % (self.frames_ps // rate) == 0:
-            self.frame = (self.frame + 1) % self.length
-            self.image = self.images[self.frame]
+    # def set_sprite(self, images: list):
+    #     self.images = images
+    #     self.length = len(self.images)
+    #     if self.length == 0:  # Убрать, при конечной компиляции кода #C11
+    #         raise ValueError("No images set. Call set_sprite method first.")
+    #     self.image = self.images[self.frame]
+    #     self.rect = self.image.get_rect(topleft=(0, 0))
+    #     self.frames_ps = fps // self.length  # Пересчитываем frames_ps после установки images
+# 
+    # def update(self, tick, rate=1) -> None:
+    #     "Обновление спрайтов"
+    #     if not self.length:
+    #         self.length = 0
+    #     if tick % (self.frames_ps // rate) == 0:
+    #         self.frame = (self.frame + 1) % self.length
+    #         self.image = self.images[self.frame]
 
     def set_char_sprite(self, images: list): # EX
         self.images = images

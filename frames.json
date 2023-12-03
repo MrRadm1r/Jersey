@@ -17,12 +17,12 @@
   ],
 
   "asteroid": [
-    "asteroids/asteroid_1.png",
+    ["asteroids/asteroid_1.png",
     "asteroids/asteroid_2.png",
-    "asteroids/asteroid_3.png"
+    "asteroids/asteroid_3.png"]
   ],
   "asteroid_1": [
-    "asteroids/asteroid_1.png"
+    ["asteroids/asteroid_1.png"]
   ],
   "asteroid_2": [
     "asteroids/asteroid_2.png"
