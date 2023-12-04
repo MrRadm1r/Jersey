@@ -1,19 +1,42 @@
 from math import copysign
-def ns(c: complex):
-    if c == 0:
-     return 0
-    abs_c = abs(c)
-    r = c.real
-    i = c.imag
-    r_sign = copysign(1, r)
-    i_sign = copysign(1, i)
-    return complex(r**2/abs_c*r_sign, i**2/abs_c*i_sign)
 
-l = 15
-dsc = [[0j]*l]*2
+class Vector:
+    l = 15
+    dsc = [[0j]*l]*2
+    def __init__(self) -> None:
+        super().__init__()
+        self.z = complex()
+        self.r = self.z.real
+        self.i = self.z.imag
+    
+    def __call__(self):
+        return self.z
 
-def inertia(c: complex):
-    global dcs
-    dsc[0] = dsc[0][1:]+[c.real+c.imag*1j]
-    dsc[1] = dsc[1][1:]+[sum(dsc[0])/len(dsc[0])]
-    return sum(dsc[1])/len(dsc[1])
+    def ns(self):
+        if self.z == 0:
+            return 0
+        abs_c = abs(self.z)
+        r = self.z.real
+        i = self.z.imag
+        r_sign = copysign(1, r)
+        i_sign = copysign(1, i)
+        self.z = complex(r**2/abs_c*r_sign, i**2/abs_c*i_sign)
+
+    def inertia(self):
+        Vector.dsc[0] = Vector.dsc[0][1:]+[self.z.real+self.z.imag*1j]
+        Vector.dsc[1] = Vector.dsc[1][1:]+[sum(Vector.dsc[0])/len(Vector.dsc[0])]
+        self.z = sum(Vector.dsc[1])/len(Vector.dsc[1])
+
+    def zero(self):
+        self.z = complex()
+    
+    def block(self, k: list|bool=[True, True]):
+        if type(k) == bool or len(k) not in [1, 2]:
+            raise AttributeError("The k attribute must be a list of length 2 or 1")
+        self.z = self.z.real * k[1] + self.z.imag * k[-1]
+
+    def add(self, other):
+        self.z += other
+
+if __name__ == "__main__":
+    v = Vector()

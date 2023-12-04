@@ -41,7 +41,7 @@ class Game:
         self.asteroid_sprite_1 = self.create_sprite(ASTEROID_1, mode=1)
         self.main_char = self.create_sprite(MAIN_CHAR, 0.15, mode=1)
         self.pos = self.w*0.5+self.h*0.5j # позиция основного игрока
-        self.tvector = 0
+        self.tvector = Vector()
         self.fps = []
         self.run() # Вызов основного игрового цикла
 
@@ -68,6 +68,7 @@ class Game:
                 self.running = False
 
     def update(self) -> None:
+        "updating sprites"
         "Отрисовка спрайтов"
         for sprite in self.asteroid_sprite_1:
             sprite.update()
@@ -90,14 +91,14 @@ class Game:
 
     def key_pressed(self) -> None:
         "pressed key"
-        self.tvector = 0
-        if self.key[pg.K_w]: self.tvector += -self.speed*1j
-        if self.key[pg.K_s]: self.tvector += self.speed*1j
-        if self.key[pg.K_a]: self.tvector += -self.speed
-        if self.key[pg.K_d]: self.tvector += self.speed
-        self.tvector = ns(self.tvector)
-        self.tvector = inertia(self.tvector)
-        self.pos += self.tvector
+        self.tvector.z = 0
+        if self.key[pg.K_w]: self.tvector.z += (-self.speed*1j)
+        if self.key[pg.K_s]: self.tvector.z += (self.speed*1j)
+        if self.key[pg.K_a]: self.tvector.z += (-self.speed)
+        if self.key[pg.K_d]: self.tvector.z += (self.speed)
+        self.tvector.ns()
+        self.tvector.inertia()
+        self.pos += self.tvector()
 
     @staticmethod
     def create_sprite(frames, k: float = 1.0, mode=0) -> pg.sprite.Group:
