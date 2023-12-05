@@ -30,7 +30,7 @@ class Vector:
     def zero(self):
         self.z = complex()
     
-    def block(self, k: list|bool=[True, True]):
+    def block(self, k: list=[True, True]):
         if type(k) == bool or len(k) not in [1, 2]:
             raise AttributeError("The k attribute must be a list of length 2 or 1")
         self.z = self.z.real * k[1] + self.z.imag * k[-1]
