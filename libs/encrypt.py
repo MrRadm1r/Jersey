@@ -21,6 +21,7 @@ if __name__ == "__main__":
         "fps": 72,
         "width": 1400,
         "height": 800,
+        "score": 0
     }
 
     encrypt_config(game_config, key)

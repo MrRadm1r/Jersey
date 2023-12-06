@@ -1,6 +1,6 @@
 import pygame as pg
-from libs.decrypt import *
-fps = decrypt('configs/config.encrypted', "PSD1LpXi3H77JX7B5_dcm29sjXcmN5fDa5tgnEP8ySg=", "fps")
+from configs.config import *
+fps = game_config["fps"]
 
 
 class Sprite(pg.sprite.Sprite):

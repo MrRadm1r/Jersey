@@ -1,11 +1,13 @@
 import pygame as pg
 import sys
 import os
-import json
 # личные модули
 from libs.sprite import *     # Sprites
 from libs.movement import *   # Movement
-from libs.decrypt import *    # decrypt config file
+from configs.config import *
+from frames import *
+# from libs.decrypt import *    # decrypt config file
+
 key = "PSD1LpXi3H77JX7B5_dcm29sjXcmN5fDa5tgnEP8ySg="
 
 def full_path(path_key: str) -> list[list[str]]:
@@ -14,27 +16,33 @@ def full_path(path_key: str) -> list[list[str]]:
     return [[os.path.join(IMG_DIR, path) for path in i] for i in frames[path_key]]
 
 # Задаём пути к папкам с изображениями через файл json
-with open("frames.json", "r") as file:
-    frames = json.load(file)
-    bg = os.path.join("img", "backgrounds", "bg.png")
-    MAIN_CHAR = full_path("main_character")
-    ASTEROID_1 = full_path("asteroid_1")
-    ASTEROIDS_1 = full_path("asteroid")
-    ASTEROIDS_2 = full_path("asteroid")
-    ASTEROIDS_3 = full_path("asteroid")
+bg = os.path.join("img", "backgrounds", "bg.png")
+MAIN_CHAR = full_path("main_character")
+ASTEROID_1 = full_path("asteroid_1")
+ASTEROIDS_1 = full_path("asteroid")
+ASTEROIDS_2 = full_path("asteroid")
+ASTEROIDS_3 = full_path("asteroid")
+
 
 class Game:
     def __init__(self) -> None:
         pg.init() # инициализация пайгейм на всякий пожарный
-        self.w = decrypt('configs/config.encrypted', key, "width")
-        self.h = decrypt('configs/config.encrypted', key, "height")
+        # with open("configs/config.json", "r") as file:
+        #     configs = json.load(file)
+        #     self.w = configs["width"]
+        #     self.h = configs["height"]
+        #     self.score = configs["score"]
+        self.w = game_config["width"]
+        self.h = game_config["height"]
+        self.score = game_config["score"]
         self.speed = 8
-        self.l = 15
         self.screen = pg.display.set_mode((self.w, self.h), pg.RESIZABLE)
         pg.display.set_caption("Jersey")
         self.running = True # Работа основного цикла игры
         self.clock = pg.time.Clock() # Экземпляр класса работы тиков
         self.tick = 0 # Тик на данный момент
+        self.font =  pg.font.Font(None, 36)
+        self.active_infobar = False
         # Загружаем изображение фона
         self.bg = pg.image.load(bg).convert()
         # Создание спрайтов
@@ -42,7 +50,10 @@ class Game:
         self.main_char = self.create_sprite(MAIN_CHAR, 0.15, mode=1)
         self.pos = self.w*0.5+self.h*0.5j # позиция основного игрока
         self.tvector = Vector()
-        self.fps = []
+        self.fps = [0]*72
+        self.click = None
+        self.pressed = {}
+        self.bg_pos = [0.0, 0.0]
         self.run() # Вызов основного игрового цикла
 
     def run(self) -> None:
@@ -54,8 +65,7 @@ class Game:
             self.handle_events()
             self.update()
             self.draw()
-            # self.fps.append(self.clock.get_fps())
-            # print(sum(self.fps)/len(self.fps))
+            self.fps = self.fps[1:] + [self.clock.get_fps()] # лист фпс за последние 10 кадров
             # print(self.fps)
 
     def handle_events(self) -> None:
@@ -66,6 +76,11 @@ class Game:
                 self.screen = pg.display.set_mode((event.w, event.h), pg.RESIZABLE)
             elif event.type == pg.QUIT:
                 self.running = False
+            elif event.type == pg.KEYDOWN:
+                if event.key == pg.K_F3 and not self.active_infobar:
+                    self.active_infobar = True
+                elif event.key == pg.K_F3 and self.active_infobar:
+                    self.active_infobar = False
 
     def update(self) -> None:
         "updating sprites"
@@ -80,11 +95,14 @@ class Game:
 
     def draw(self) -> None:
         "draws on the screen"
-        self.screen.blit(self.bg, (0, 0)) # Рисуем Фон
+        self.screen.blit(self.bg, self.bg_pos) # Рисуем Фон
 
         # Рисуем спрайты
         self.asteroid_sprite_1.draw(self.screen)
         self.main_char.draw(self.screen)
+
+        self.infobar()
+
 
         pg.display.flip() # updates the screen
         self.clock.tick(72)  # Ограничиваем частоту обновления кадров
@@ -96,9 +114,39 @@ class Game:
         if self.key[pg.K_s]: self.tvector.z += (self.speed*1j)
         if self.key[pg.K_a]: self.tvector.z += (-self.speed)
         if self.key[pg.K_d]: self.tvector.z += (self.speed)
-        self.tvector.ns()
-        self.tvector.inertia()
+        self.tvector.norm_speed()
+        # self.tvector.inertia()
+        # if self.pos.real+self.tvector.z.real <= self.w//3*2:
+        #     pass
+        # else:
+        #     self.bg_pos[0] += int(self.tvector.z.real)
+        #     self.tvector.block([0,1])
+
+        if self.pos.real+self.tvector.z.real <= self.w/4*1:
+            self.bg_pos[0] += self.tvector.z.real
+            self.tvector.block([1, 0])
+        if self.pos.real+self.tvector.z.real >= self.w/4*3:
+            self.bg_pos[0] += self.tvector.z.real
+            self.tvector.block([1, 0])
+        if self.pos.imag+self.tvector.z.imag <= self.h/4*1:
+            self.bg_pos[1] += self.tvector.z.imag
+            self.tvector.block([0, 1])
+        if self.pos.imag+self.tvector.z.imag >= self.h/4*3:
+            self.bg_pos[1] += self.tvector.z.imag
+            self.tvector.block([0, 1])
+
+        
         self.pos += self.tvector()
+
+    def infobar(self) -> None:
+        if self.active_infobar:
+            text = [f"FPS: {round(sum(self.fps)/72)}", 
+                    f"Position: X {round(self.pos.real)}; Y {round(self.pos.imag)}"]
+            for i in range(len(text)):
+                self.screen.blit(self.font.render(text[i], True, "white"), (10, 10+i*36))
+        else:
+            pass
+        
 
     @staticmethod
     def create_sprite(frames, k: float = 1.0, mode=0) -> pg.sprite.Group:

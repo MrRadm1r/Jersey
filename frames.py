@@ -1,0 +1,33 @@
+frames = {
+  "bg": [
+    "bg.png"
+  ],
+  
+  "main_character": [
+    [
+      "characters/main_char/stay/stay_1.png"],
+    [
+      "characters/main_char/up/up_1.png",
+      "characters/main_char/up/up_2.png",
+      "characters/main_char/up/up_3.png"],
+    [
+      "characters/main_char/down/down_1.png",
+      "characters/main_char/down/down_2.png",
+      "characters/main_char/down/down_3.png"]
+  ],
+
+  "asteroid": [
+    ["asteroids/asteroid_1.png",
+    "asteroids/asteroid_2.png",
+    "asteroids/asteroid_3.png"]
+  ],
+  "asteroid_1": [
+    ["asteroids/asteroid_1.png"]
+  ],
+  "asteroid_2": [
+    "asteroids/asteroid_2.png"
+  ],
+  "asteroid_3": [
+    "asteroids/asteroid_3.png"
+  ]
+}

@@ -12,7 +12,7 @@ class Vector:
     def __call__(self):
         return self.z
 
-    def ns(self):
+    def restriction(self):
         if self.z == 0:
             return 0
         abs_c = abs(self.z)
@@ -31,12 +31,14 @@ class Vector:
         self.z = complex()
     
     def block(self, k: list|bool=[True, True]):
-        if type(k) == bool or len(k) not in [1, 2]:
+        if type(k) == bool or len(k) not in [1, 2]:  # Урбать при финальной компиляции #C11     
             raise AttributeError("The k attribute must be a list of length 2 or 1")
         self.z = self.z.real * k[1] + self.z.imag * k[-1]
+    
+    def norm_speed(self):
+        self.restriction()
+        self.inertia()
 
-    def add(self, other):
-        self.z += other
 
 if __name__ == "__main__":
     v = Vector()
