@@ -6,8 +6,6 @@ class Vector:
     def __init__(self) -> None:
         super().__init__()
         self.z = complex()
-        self.r = self.z.real
-        self.i = self.z.imag
     
     def __call__(self):
         return self.z
@@ -30,10 +28,10 @@ class Vector:
     def zero(self):
         self.z = complex()
     
-    def block(self, k: list|bool=[True, True]):
-        if type(k) == bool or len(k) not in [1, 2]:  # Урбать при финальной компиляции #C11     
+    def block(self, k: list=[True, True]):
+        if len(k) not in [1, 2]:  # Урбать при финальной компиляции #C11     
             raise AttributeError("The k attribute must be a list of length 2 or 1")
-        self.z = self.z.real * k[1] + self.z.imag * k[-1]
+        self.z = complex(self.z.real * k[0], self.z.imag * k[1])
     
     def norm_speed(self):
         self.restriction()

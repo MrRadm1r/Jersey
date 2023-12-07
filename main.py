@@ -16,7 +16,7 @@ def full_path(path_key: str) -> list[list[str]]:
     return [[os.path.join(IMG_DIR, path) for path in i] for i in frames[path_key]]
 
 # Задаём пути к папкам с изображениями через файл json
-bg = os.path.join("img", "backgrounds", "bg.png")
+bg = os.path.join("img", "backgrounds", "bgpsdraw.png")
 MAIN_CHAR = full_path("main_character")
 ASTEROID_1 = full_path("asteroid_1")
 ASTEROIDS_1 = full_path("asteroid")
@@ -73,7 +73,9 @@ class Game:
         for event in pg.event.get():
             if event.type == pg.VIDEORESIZE:
                 # Обработка изменения размера окна
-                self.screen = pg.display.set_mode((event.w, event.h), pg.RESIZABLE)
+                self.w = event.w
+                self.h = event.h
+                self.screen = pg.display.set_mode((self.w*2, self.h), pg.RESIZABLE)
             elif event.type == pg.QUIT:
                 self.running = False
             elif event.type == pg.KEYDOWN:
@@ -115,33 +117,35 @@ class Game:
         if self.key[pg.K_a]: self.tvector.z += (-self.speed)
         if self.key[pg.K_d]: self.tvector.z += (self.speed)
         self.tvector.norm_speed()
-        # self.tvector.inertia()
-        # if self.pos.real+self.tvector.z.real <= self.w//3*2:
-        #     pass
-        # else:
-        #     self.bg_pos[0] += int(self.tvector.z.real)
-        #     self.tvector.block([0,1])
-
-        if self.pos.real+self.tvector.z.real <= self.w/4*1:
-            self.bg_pos[0] += self.tvector.z.real
-            self.tvector.block([1, 0])
-        if self.pos.real+self.tvector.z.real >= self.w/4*3:
-            self.bg_pos[0] += self.tvector.z.real
-            self.tvector.block([1, 0])
-        if self.pos.imag+self.tvector.z.imag <= self.h/4*1:
-            self.bg_pos[1] += self.tvector.z.imag
-            self.tvector.block([0, 1])
-        if self.pos.imag+self.tvector.z.imag >= self.h/4*3:
-            self.bg_pos[1] += self.tvector.z.imag
-            self.tvector.block([0, 1])
-
         
+
+        if self.bg_pos[0] - self.tvector.z.real <= 0:
+            if self.pos.real+self.tvector.z.real <= self.w/4*1 and self.pos.real > self.w/4*1:
+                self.bg_pos[0] -= self.tvector.z.real
+                self.tvector.block([0, 1])
+        if self.bg_pos[0] - self.tvector.z.real >= -3840+self.w:
+            if self.pos.real+self.tvector.z.real >= self.w/4*3 and self.pos.real > (-3840+self.w)/4*3:
+                print(self.pos.real, (-3840+self.w)/4*3)
+                self.bg_pos[0] -= self.tvector.z.real
+                self.tvector.block([0, 1]) # блокируется перемещение по X
+        if self.pos.imag+self.tvector.z.imag <= self.h/4*1:
+            self.bg_pos[1] -= self.tvector.z.imag
+            self.tvector.block([1, 0]) # блокируется перемещение по Y
+        if self.pos.imag+self.tvector.z.imag >= self.h/4*3:
+            self.bg_pos[1] -= self.tvector.z.imag
+            self.tvector.block([1, 0])  # блокируется перемещение по Y
+        
+        
+        if self.pos.real + self.tvector.z.real < 0:
+            self.tvector.block([0, 1])
         self.pos += self.tvector()
 
     def infobar(self) -> None:
         if self.active_infobar:
             text = [f"FPS: {round(sum(self.fps)/72)}", 
-                    f"Position: X {round(self.pos.real)}; Y {round(self.pos.imag)}"]
+                    f"Position: X {round(self.pos.real-self.bg_pos[0])}; Y {round(self.pos.imag-self.bg_pos[1])}",
+                    f"Moving vector: X {round(self.tvector.z.real)}; Y {round(self.tvector.z.imag)}",
+                    ]
             for i in range(len(text)):
                 self.screen.blit(self.font.render(text[i], True, "white"), (10, 10+i*36))
         else:
