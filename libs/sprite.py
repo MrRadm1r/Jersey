@@ -13,6 +13,7 @@ class Sprite(pg.sprite.Sprite):
         self.image = None  # active sprite
         self.rect = None # collision
         self.tick = 0
+        self.surface = None
 
     def set_sprite(self, images: list) -> None:
         "Declaring sprites"
@@ -34,3 +35,6 @@ class Sprite(pg.sprite.Sprite):
 
     def move(self, c: complex, position="topleft"):
         setattr(self.rect, position, (c.real, c.imag))
+
+    def get_srect(self):
+        return self.rect

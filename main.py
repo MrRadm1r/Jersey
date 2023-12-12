@@ -54,6 +54,8 @@ class Game:
         self.click = None
         self.pressed = {}
         self.bg_pos = [0.0, 0.0]
+        self.main_char_mask = pg.mask.from_surface(list(self.main_char)[0].image)
+        self.asteroid_mask = pg.mask.from_surface(list(self.asteroid_sprite_1)[0].image)
         self.run() # Вызов основного игрового цикла
 
     def run(self) -> None:
@@ -66,6 +68,15 @@ class Game:
             self.update()
             self.draw()
             self.fps = self.fps[1:] + [self.clock.get_fps()] # лист фпс за последние 10 кадров
+
+
+            # print(self.main_char_rect.colliderect(list(self.asteroid_sprite_1)[0].get_srect()))
+            if self.main_char_mask.overlap(self.asteroid_mask, (500-self.pos.real, 300-self.pos.imag)) is not None:
+                print(True)
+            else:
+                print(False)
+
+
             # print(self.fps)
 
     def handle_events(self) -> None:
@@ -75,7 +86,7 @@ class Game:
                 # Обработка изменения размера окна
                 self.w = event.w
                 self.h = event.h
-                self.screen = pg.display.set_mode((self.w*2, self.h), pg.RESIZABLE)
+                self.screen = pg.display.set_mode((self.w, self.h), pg.RESIZABLE)
             elif event.type == pg.QUIT:
                 self.running = False
             elif event.type == pg.KEYDOWN:
@@ -89,7 +100,7 @@ class Game:
         "Отрисовка спрайтов"
         for sprite in self.asteroid_sprite_1:
             sprite.update()
-            sprite.move(complex(0, 400), "topleft")
+            sprite.move(complex(500, 300), "topleft")
 
         for sprite in self.main_char:
             sprite.update(index=0, rate=2.5)
@@ -117,21 +128,21 @@ class Game:
         if self.key[pg.K_a]: self.tvector.z += (-self.speed)
         if self.key[pg.K_d]: self.tvector.z += (self.speed)
         self.tvector.norm_speed()
-        
+        self.tvector.inertia()
 
         if self.bg_pos[0] - self.tvector.z.real <= 0:
-            if self.pos.real+self.tvector.z.real <= self.w/4*1 and self.pos.real > self.w/4*1:
+            if self.pos.real+self.tvector.z.real <= self.w*(1/3) and self.pos.real > self.w*(1/3):
                 self.bg_pos[0] -= self.tvector.z.real
                 self.tvector.block([0, 1])
         if self.bg_pos[0] - self.tvector.z.real >= -3840+self.w:
-            if self.pos.real+self.tvector.z.real >= self.w/4*3 and self.pos.real > (-3840+self.w)/4*3:
+            if self.pos.real+self.tvector.z.real >= self.w*(2/3) and self.pos.real > (-3840+self.w)*(2/3):
                 print(self.pos.real, (-3840+self.w)/4*3)
                 self.bg_pos[0] -= self.tvector.z.real
                 self.tvector.block([0, 1]) # блокируется перемещение по X
-        if self.pos.imag+self.tvector.z.imag <= self.h/4*1:
+        if self.pos.imag+self.tvector.z.imag <= self.h*(1/3) and self.pos.imag > self.h*(1/3):
             self.bg_pos[1] -= self.tvector.z.imag
             self.tvector.block([1, 0]) # блокируется перемещение по Y
-        if self.pos.imag+self.tvector.z.imag >= self.h/4*3:
+        if self.pos.imag+self.tvector.z.imag >= self.h*(2/3):
             self.bg_pos[1] -= self.tvector.z.imag
             self.tvector.block([1, 0])  # блокируется перемещение по Y
         
